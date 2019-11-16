@@ -1,28 +1,25 @@
 # c-ImageUploadWindowsForm
-
 private void PictureBox1_Click(object sender, EventArgs e)
         {
-            try
+            var openFileDialog = new OpenFileDialog()
             {
-                OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                FileName = "Select Image File",
+                Filter="Select (*.jpg, *.png) | *.jpg; *.png;",
+                Title="Select jpg or png image"
+            };
 
-                openFileDialog1.Filter = "Image files | *.jpg";
-                if (openFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    var sourceFilePath = openFileDialog1.FileName;
-                   
-                    pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
-
-                    var extension = Path.GetExtension(sourceFilePath);
-
-                    destinationFilePath = "F:\\SEM IV\\6. Computer Project\\My Phone Book\\images\\" + GetUserId() + extension;
-
-                    File.Copy(sourceFilePath, destinationFilePath,true);
-                    
-                }
-            }
-            catch (Exception ex)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(ex.Message);
+                var fileName = openFileDialog.FileName;
+                var extension = Path.GetExtension(fileName);
+                var newFileName = Guid.NewGuid().ToString() + extension;
+
+                var destinationPath = $"{Directory.GetCurrentDirectory()}\\images\\{newFileName}";
+
+                File.Copy(fileName, destinationPath, true);
+
+                pictureBox1.Image = Image.FromFile(fileName);
+
+                MessageBox.Show("File uploaded successfully");
             }
         }
